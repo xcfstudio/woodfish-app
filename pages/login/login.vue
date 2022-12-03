@@ -1,0 +1,163 @@
+<template>
+	<view class="container">
+		<image class="avatar" :src="topAvatar" />
+		<view class="msg_box" v-if="errMsgShow">
+			账户或密码错误
+		</view>
+		<view class="inputbox">
+			<input v-model="account" type="text" class="account uni-input-input" focus placeholder="用户名/手机号/邮箱"
+				placeholder-style="color: #c0c0c0" auto-focus>
+			<input v-model="password" type="password" class="password uni-input-input" placeholder="密码"
+				placeholder-style="color: #c0c0c0">
+		</view>
+		<view class="btnbox">
+			<view class="login btn" @click="login">登陆</view>
+			<view class="registry btn">注册</view>
+		</view>
+
+	</view>
+</template>
+
+<script lang="ts" setup>
+	import {
+		computed,
+		ref
+	} from "vue";
+import { getToken } from "../../utils/getToken";
+	import request from "../../utils/request";
+	import {setToken} from '../../utils/setToken'
+	
+	// 用户头像链接
+	const topAvatar = ref('../../static/grey-avatar.svg')
+	// 控制错误信息显示
+	const errMsgShow = ref(false)
+
+	const account = ref('')
+	const password = ref('')
+	// 密码哈希处理
+	const hashPwd = computed(() => {
+		return password.value
+	})
+	// 账户信息
+
+
+	const login = async () => {
+		if (account.value.length === 0 || password.value.length === 0) {
+			uni.showToast({
+				title: '请完整输入',
+				icon: "error"
+			})
+			return
+		}
+		try {
+			const res: any = await request({
+				url: '/api/users/login/',
+				data: {
+					account: account.value,
+					password: hashPwd.value
+				},
+				method: 'POST'
+			})
+			if (res.code === 200) {
+				uni.showToast({
+					icon: "success",
+					title: '登录成功',
+				})
+				// 缓存token
+				await setToken('access', res.data.accesstoken)
+				await setToken('refresh', res.data.refreshtoken)
+				
+				
+				// 跳转主界面
+				uni.switchTab({
+					url: '../mypage/mypage'
+				})
+				// console.log('access', await getToken('access'));
+				// console.log('refresh', await getToken('refresh'));
+				
+			} else {
+				uni.showToast({
+					icon: "error",
+					title: '登录失败'
+				})
+			}
+		} catch (e) {
+			uni.showToast({
+				icon: "error",
+				title: '网络异常'
+			})
+			console.log(e);
+		}
+
+
+	}
+</script>
+
+<style lang="less" scoped>
+	.container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		.avatar {
+			width: 200upx;
+			height: 200upx;
+			border-radius: 50%;
+			margin-top: 100upx;
+			margin-bottom: 50upx;
+		}
+
+		.msg_box {
+			margin-top: 30upx;
+		}
+
+		.inputbox {
+			margin-top: 10upx;
+			width: 500upx;
+
+			.account,
+			.password {
+				box-sizing: border-box;
+				height: 90upx;
+				padding: 15upx 45upx;
+				background-color: #e3eefd;
+				border-radius: 45upx;
+				margin-top: 25upx;
+				font-size: 35upx;
+				// border-bottom: 2px solid #577bff;
+			}
+			
+			
+			
+		}
+		
+		
+
+		.btnbox {
+			margin-top: 50upx;
+
+			.btn {
+				box-sizing: border-box;
+				height: 90upx;
+				width: 500upx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-radius: 45upx;
+				margin-bottom: 20upx;
+
+			}
+
+			.login {
+				color: #fff;
+				background-image: linear-gradient(135deg, #ABDCFF 10%, #0396FF 100%);
+			}
+
+			.registry {
+				border: 1px solid #0396FF;
+			}
+		}
+
+	}
+</style>

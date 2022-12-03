@@ -1,0 +1,9 @@
+.hbuilderx
+.vscode
+.idea
+.git
+node_modules
+unpackage
+.DS_Store
+.settings
+.project
