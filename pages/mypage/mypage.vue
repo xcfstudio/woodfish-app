@@ -3,13 +3,13 @@
 
 		<view class="top-info">
 			<view class="left">
-				<image :src="avatar" mode="" class="avatar"></image>
+				<image :src="userInfoStore.avatar" mode="" class="avatar"></image>
 				<view class="user-info">
 					<view class="username">
-						{{username}}
+						{{userInfoStore.gongdeInfo.data.username}}
 					</view>
 					<view class="userid">
-						UID: {{uid}}
+						UID: {{userInfoStore.gongdeInfo.data.uid}}
 					</view>
 				</view>
 			</view>
@@ -21,10 +21,10 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="nologin" v-if="!loginState">
 			<image src="../../static/null-data.svg" mode=""></image>
-			
+
 			<view class="loginnow" @click="navToLogin">
 				登陆/注册
 			</view>
@@ -40,7 +40,7 @@
 			<view class="card-container">
 				<view class="card today-gongde">
 					<view class="value">
-						6445
+						{{userInfoStore.gongdeInfo.data.todayScore}}
 					</view>
 					<view class="description">
 						今日功德
@@ -49,7 +49,7 @@
 
 				<view class="card total-gongde">
 					<view class="value">
-						6445
+						{{userInfoStore.gongdeInfo.data.totalScore}}
 					</view>
 					<view class="description">
 						累计功德
@@ -58,7 +58,7 @@
 
 				<view class="card today-ranking">
 					<view class="value">
-						23
+						{{userInfoStore.gongdeInfo.data.todayRanking}}
 					</view>
 					<view class="description">
 						今日排名
@@ -67,7 +67,7 @@
 
 				<view class="card total-ranking">
 					<view class="value">
-						34
+						{{userInfoStore.gongdeInfo.data.totalRanking}}
 					</view>
 					<view class="description">
 						累计排名
@@ -81,7 +81,8 @@
 		</view>
 
 		<view class="more-service">
-			<view class="service-item contact">
+			<!-- 联系客服 -->
+			<view class="service-item contact" @click="navgateToContact">
 				<span class="item-left"><span class="iconfont service-icon">&#xe674;</span> 联系客服</span><span
 					class="iconfont">&#xe6ab;</span>
 			</view>
@@ -104,45 +105,138 @@
 
 <script lang="ts">
 	import {
+		computed,
 		ref
 	} from "vue"
 	import {
 		isLogin
 	} from "../../utils/isLogin";
-	
+	import request from "../../utils/request";
+	import {UserInfo} from "../../store/index"
 	export default {
 		setup() {
-			const username = ref('未登陆')
-			const avatar = ref('../../static/grey-avatar.svg')
-			const level = ref(0)
-			const uid = ref('0000000000')
+			const userInfoStore = UserInfo()
+			
+			// const avatar = ref('../../static/grey-avatar.svg')
+			// const level = ref(0)
+			// const uid = ref('0000000000')
 			const loginState = ref(false)
 			
+			
+
+			// 用户头像已拉取标记
+			let avatarPulled = false
+
+			// 功德基本信息
+			// const gongdeInfo = reactive({
+			// 	data: {
+			// 		todayScore: 0,
+			// 		totalScore: 0,
+			// 		todayRanking: 0,
+			// 		totalRanking: 0,
+			// 		username: '未登陆',
+			// 		uid: '00000000000'
+			// 	}
+			// })
+
+			// 跳转至登陆界面
 			const navToLogin = () => {
-				console.log(666);
 				uni.navigateTo({
 					url: '../login/login',
-					animationType: 'pop-in',
+					animationType: 'fade-in',
 					fail: (err) => {
 						console.log(err);
 					}
 				})
 			}
+
+			// 拉取功德信息
+			const pullGongdeInfo = async () => {
+				if (loginState.value) {
+					// console.log('request');
+					const res: any = await request({
+						url: '/api/gongde/woodfish/basicinfo',
+						method: 'GET',
+						token: 'access'
+					})
+					userInfoStore.gongdeInfo.data = res.data
+					
+				}
+			}
+
+			// 拉取头像
+			const pullAvatar = async () => {
+				if (loginState.value) {
+					const res: any = await request({
+						url: '/api/users/information/avatar',
+						method: 'GET',
+						token: 'access'
+					})
+					if (res.data.avatar) {
+						userInfoStore.avatar = res.data.avatar
+						avatarPulled = true
+					}
+
+				}
+			}
+
+			// 重置信息
+			const reset = () => {
+				userInfoStore.avatar = '../../static/grey-avatar.svg'
+				userInfoStore.username = '未登陆'
+				userInfoStore.uid = '--'
+				userInfoStore.gongdeInfo.data.totalScore = 0
+			}
+
+
+			// 计算等级
+			const level = computed(() => {
+				return levelRule(userInfoStore.gongdeInfo.data.totalScore)
+			})
+
+			// 等级计算规则
+			const levelRule = (level: number) => {
+				if (!level || level === 0) return 0
+				return Math.ceil(level / 500)
+			}
 			
+			// -------------------跳转函数---------------------
+			const navgateToContact = () => {
+				uni.navigateTo({
+					url: '../contact/contact'
+				})
+			}
+
 			return {
-				username, avatar, level, uid, loginState, navToLogin
+				level,
+				loginState,
+				navToLogin,
+				pullGongdeInfo,
+				pullAvatar,
+				avatarPulled,
+				reset,
+				navgateToContact,
+				userInfoStore
 			}
 		},
 		onShow() {
 			this.loginState = isLogin()
+			this.pullGongdeInfo()
+			if (this.loginState) {
+				if (!this.avatarPulled) {
+					this.pullAvatar()
+				}
+			} else {
+				this.userInfoStore.$reset()
+			}
+
 			// console.log('页面展示了');
 		},
 		onLoad() {
+
 			// console.log('页面加载');
 		}
 	}
-	
-	
 </script>
 
 <style lang="less" scoped>
@@ -163,6 +257,7 @@
 				.avatar {
 					width: 100upx;
 					height: 100upx;
+					border-radius: 50upx;
 					margin-right: 25upx;
 				}
 
@@ -177,6 +272,7 @@
 					}
 				}
 			}
+
 			.right {
 				.level {
 					padding: 5upx 20upx;
@@ -192,9 +288,11 @@
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+
 			image {
 				height: 500upx;
 			}
+
 			.loginnow {
 				box-sizing: border-box;
 				display: flex;
@@ -208,13 +306,14 @@
 				font-weight: bold;
 				box-shadow: 0 0 10px #c5d9ff;
 			}
+
 			.msg {
 				margin-top: 40upx;
 				font-size: 25upx;
 				color: #cdcdcd;
 			}
 		}
-		
+
 		.title {
 			margin-top: 30px;
 			margin-bottom: 20upx;
@@ -270,6 +369,9 @@
 				margin-bottom: 20upx;
 				display: flex;
 				justify-content: space-between;
+				&:active {
+					font-weight: bold;
+				}
 
 				.item-left {
 					display: flex;

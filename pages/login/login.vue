@@ -21,12 +21,20 @@
 <script lang="ts" setup>
 	import {
 		computed,
-		ref
+		ref,
+		watch
 	} from "vue";
-import { getToken } from "../../utils/getToken";
-	import request from "../../utils/request";
-	import {setToken} from '../../utils/setToken'
+	import {
+		debounce
+	} from "../../utils/debounce";
 	
+	import request from "../../utils/request";
+	import {
+		setToken
+	} from '../../utils/setToken'
+	import {UserInfo} from '../../store/index'
+
+const userInfoStore = UserInfo()
 	// 用户头像链接
 	const topAvatar = ref('../../static/grey-avatar.svg')
 	// 控制错误信息显示
@@ -38,7 +46,29 @@ import { getToken } from "../../utils/getToken";
 	const hashPwd = computed(() => {
 		return password.value
 	})
-	// 账户信息
+
+	const getAvatar = async () => {
+		try {
+			if (account.value.length === 0) return
+			const res: any = await request({
+				url: `/api/users/avatar/${encodeURI(account.value)}`,
+				method: 'GET'
+			})
+			if (res && res.data.avatar) {
+				topAvatar.value = res.data.avatar
+			}
+			
+		} catch (e) {
+			//TODO handle the exception
+		}
+	}
+
+	// 防抖
+	const _debounce = debounce(getAvatar, 500)
+
+	watch(account, () => {
+		_debounce()
+	})
 
 
 	const login = async () => {
@@ -66,15 +96,17 @@ import { getToken } from "../../utils/getToken";
 				// 缓存token
 				await setToken('access', res.data.accesstoken)
 				await setToken('refresh', res.data.refreshtoken)
-				
-				
+
+				// 设置登陆状态
+				userInfoStore.loginState = true
+
 				// 跳转主界面
 				uni.switchTab({
 					url: '../mypage/mypage'
 				})
 				// console.log('access', await getToken('access'));
 				// console.log('refresh', await getToken('refresh'));
-				
+
 			} else {
 				uni.showToast({
 					icon: "error",
@@ -127,12 +159,12 @@ import { getToken } from "../../utils/getToken";
 				font-size: 35upx;
 				// border-bottom: 2px solid #577bff;
 			}
-			
-			
-			
+
+
+
 		}
-		
-		
+
+
 
 		.btnbox {
 			margin-top: 50upx;

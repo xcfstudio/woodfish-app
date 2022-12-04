@@ -22,7 +22,14 @@
 				"transparentTitle": "always"
 			}
 
-		}, {
+		},
+		{
+			"path": "pages/contact/contact",
+			"style": {
+				"navigationBarTitleText": "联系客服"
+			}
+		},
+		{
 			"path": "pages/dev/dev",
 			"style": {
 				"navigationBarTitleText": "开发者调试界面",
@@ -51,7 +58,8 @@
 				"pagePath": "pages/dev/dev",
 				"text": "devtool"
 			}
-		]
+		],
+		"borderStyle": "white"
 	},
 	"uniIdRouter": {},
 	"condition": {

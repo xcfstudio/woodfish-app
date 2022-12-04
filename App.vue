@@ -1,7 +1,21 @@
 <script>
+import { intervalRefreshToken, refreshToken } from './utils/refreshToken'
+import {UserInfo} from './store/index'
 	export default {
-		onLaunch: function() {
+		setup(){
+			const userInfoStore = UserInfo()
+			return {
+				userInfoStore
+			}
+		},
+		onLaunch: async function() {
 			console.log('App Launch')
+			const r = await refreshToken()
+			if (r) {
+				this.userInfoStore.loginState = true
+			}
+			intervalRefreshToken()
+			
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -42,4 +56,10 @@
 	  -webkit-font-smoothing: antialiased;
 	  -moz-osx-font-smoothing: grayscale;
 	}
+	
+	 /* page {
+	        display: flex;
+	        flex-direction: column;
+	        height: 100%;
+	    } */
 </style>

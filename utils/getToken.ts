@@ -1,7 +1,7 @@
 /**
  * 异步获取本地token缓存
  */
-const getToken = (type: 'access'|'refresh' = 'access') => {
+const getToken = (type: 'access'|'refresh' = 'access'): Promise<string> => {
 	return new Promise((resolve, reject) => {
 		uni.getStorage({
 			key: type+'Token',
