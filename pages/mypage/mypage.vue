@@ -22,7 +22,7 @@
 			</view>
 		</view>
 
-		<view class="nologin" v-if="!loginState">
+		<view class="nologin" v-if="!userInfoStore.loginState">
 			<image src="../../static/null-data.svg" mode=""></image>
 
 			<view class="loginnow" @click="navToLogin">
@@ -33,7 +33,7 @@
 			</view>
 		</view>
 
-		<view class="container-box" v-if="loginState">
+		<view class="container-box" v-if="userInfoStore.loginState">
 			<view class="title">
 				我的功德
 			</view>
@@ -106,89 +106,15 @@
 <script lang="ts">
 	import {
 		computed,
-		ref
 	} from "vue"
 	import {
 		isLogin
 	} from "../../utils/isLogin";
-	import request from "../../utils/request";
 	import {UserInfo} from "../../store/index"
 	export default {
 		setup() {
 			const userInfoStore = UserInfo()
-			
-			// const avatar = ref('../../static/grey-avatar.svg')
-			// const level = ref(0)
-			// const uid = ref('0000000000')
-			const loginState = ref(false)
-			
-			
-
-			// 用户头像已拉取标记
-			let avatarPulled = false
-
-			// 功德基本信息
-			// const gongdeInfo = reactive({
-			// 	data: {
-			// 		todayScore: 0,
-			// 		totalScore: 0,
-			// 		todayRanking: 0,
-			// 		totalRanking: 0,
-			// 		username: '未登陆',
-			// 		uid: '00000000000'
-			// 	}
-			// })
-
-			// 跳转至登陆界面
-			const navToLogin = () => {
-				uni.navigateTo({
-					url: '../login/login',
-					animationType: 'fade-in',
-					fail: (err) => {
-						console.log(err);
-					}
-				})
-			}
-
-			// 拉取功德信息
-			const pullGongdeInfo = async () => {
-				if (loginState.value) {
-					// console.log('request');
-					const res: any = await request({
-						url: '/api/gongde/woodfish/basicinfo',
-						method: 'GET',
-						token: 'access'
-					})
-					userInfoStore.gongdeInfo.data = res.data
-					
-				}
-			}
-
-			// 拉取头像
-			const pullAvatar = async () => {
-				if (loginState.value) {
-					const res: any = await request({
-						url: '/api/users/information/avatar',
-						method: 'GET',
-						token: 'access'
-					})
-					if (res.data.avatar) {
-						userInfoStore.avatar = res.data.avatar
-						avatarPulled = true
-					}
-
-				}
-			}
-
-			// 重置信息
-			const reset = () => {
-				userInfoStore.avatar = '../../static/grey-avatar.svg'
-				userInfoStore.username = '未登陆'
-				userInfoStore.uid = '--'
-				userInfoStore.gongdeInfo.data.totalScore = 0
-			}
-
-
+		
 			// 计算等级
 			const level = computed(() => {
 				return levelRule(userInfoStore.gongdeInfo.data.totalScore)
@@ -200,41 +126,53 @@
 				return Math.ceil(level / 500)
 			}
 			
+			
 			// -------------------跳转函数---------------------
 			const navgateToContact = () => {
 				uni.navigateTo({
 					url: '../contact/contact'
 				})
 			}
+			
+			// 跳转至登陆界面
+			const navToLogin = () => {
+				uni.navigateTo({
+					url: '../login/login',
+					animationType: 'fade-in',
+					fail: (err) => {
+						console.log(err);
+					}
+				})
+			}
 
 			return {
 				level,
-				loginState,
 				navToLogin,
-				pullGongdeInfo,
-				pullAvatar,
-				avatarPulled,
-				reset,
+				// pullGongdeInfo,
+				// avatarPulled,
+				// reset,
 				navgateToContact,
 				userInfoStore
 			}
 		},
 		onShow() {
-			this.loginState = isLogin()
-			this.pullGongdeInfo()
-			if (this.loginState) {
-				if (!this.avatarPulled) {
-					this.pullAvatar()
-				}
+			this.userInfoStore.loginState = isLogin()
+			
+			if (this.userInfoStore.loginState) {
+				this.userInfoStore.pullGongdeInfo()
+				// this.pullGongdeInfo()
+				
 			} else {
 				this.userInfoStore.$reset()
 			}
 
-			// console.log('页面展示了');
 		},
 		onLoad() {
-
-			// console.log('页面加载');
+			this.userInfoStore.pullAvatar()
+		},
+		onPullDownRefresh() {
+			this.userInfoStore.pullGongdeInfo()
+			this.userInfoStore.pullAvatar()
 		}
 	}
 </script>

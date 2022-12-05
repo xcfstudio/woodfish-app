@@ -18,8 +18,9 @@
 			"path": "pages/mypage/mypage",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false,
+				"enablePullDownRefresh": true,
 				"transparentTitle": "always"
+				
 			}
 
 		},
@@ -37,7 +38,17 @@
 			}
 
 		}
-	],
+	    ,{
+            "path" : "pages/ranking/ranking",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false,
+				"transparentTitle": "always"
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "功德网",

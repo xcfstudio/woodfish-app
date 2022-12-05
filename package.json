@@ -10,5 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/totp-generator": "^0.0.4",
+    "totp-generator": "^0.0.14"
   }
 }

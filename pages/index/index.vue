@@ -1,69 +1,121 @@
 <template>
-		<view class="container">
-			<view class="user-info">
-				<view class="avatar">
-					<image :src="userInfoStore.avatar" mode=""></image>
-					<view class="username">
-						{{userInfoStore.gongdeInfo.data.username}}
-					</view>
-				</view>
-				<view class="score">
-					今日<span>{{userInfoStore.gongdeInfo.data.todayScore}}</span>功德
+	<view class="container">
+		<view class="user-info">
+			<view class="avatar">
+				<image :src="userInfoStore.avatar" mode=""></image>
+				<view class="username">
+					{{userInfoStore.gongdeInfo.data.username}}
 				</view>
 			</view>
-			<view class="woodfish-box">
-				<view class="woodfish" @click="knock">
-					木鱼
-				</view>
+			<view class="score">
+				今日<span>{{userInfoStore.gongdeInfo.data.todayScore}}</span>功德
 			</view>
 		</view>
+		<view class="woodfish-box">
+			<view class="woodfish" @click="knock">
+				木鱼
+			</view>
+		</view>
+	</view>
 </template>
 
 <script lang="ts">
-	import {UserInfo} from '../../store/index'
-import request from '../../utils/request';
+	import {
+		UserInfo
+	} from '../../store/index'
+	import {
+		debounce
+	} from '../../utils/debounce';
+	import request from '../../utils/request';
+	import totp from 'totp-generator'
+	import conf from '../../config/appConfig'
 	export default {
 		setup() {
 			const userInfoStore = UserInfo()
 			const audioCtx = uni.createInnerAudioContext()
 			audioCtx.src = '../../static/knock.mp3'
+
+			// 上传本地缓存的分数，并重置缓存
+			const upLoadScore = async () => {
+				console.log('upload');
+				const score = userInfoStore.gongdeCache
+				request({
+					url: '/api/gongde/woodfish/knock2',
+					method: 'POST',
+					token: 'access',
+					data: {
+						score,
+						secret: totp(conf.totp.Key, {
+							algorithm: 'SHA-256',
+							period: conf.totp.period,
+							digits: 10
+						})
+					}
+				}).then((v: any) => {
+					console.log(v);
+					if (v.code === 200) {
+						userInfoStore.gongdeInfo.data.todayScore = v.data.todayScore
+					}
+				}).catch(() => {
+					userInfoStore.gongdeCache += score
+				})
+
+				// 重置缓存
+				userInfoStore.gongdeCache = 0
+			}
+			const _debounce_uploadScore = debounce(upLoadScore, 2000)
+
 			const knock = async () => {
 				// 播放声音
 				audioCtx.stop()
 				audioCtx.play()
-				
+
+
+
 				if (userInfoStore.loginState) {
-					const res:any = await request({
-						url: '/api/gongde/woodfish/knock',
-						method: 'POST',
-						token: 'access'
-					})
-					userInfoStore.gongdeInfo.data.todayScore = res.data.todayScore
+					// const res:any = await request({
+					// 	url: '/api/gongde/woodfish/knock',
+					// 	method: 'POST',
+					// 	token: 'access'
+					// })
+					// userInfoStore.gongdeInfo.data.todayScore = res.data.todayScore
 					// console.log('登陆的用户在敲木鱼');
+
+
+					// 功德缓冲区
+					userInfoStore.gongdeCache++
+
+					// 修改本地显示功德
+					userInfoStore.gongdeInfo.data.todayScore++
+
+					_debounce_uploadScore()
 				}
 			}
-			
+
 			return {
-				userInfoStore, knock
+				userInfoStore,
+				knock
 			}
 		}
 	}
-
 </script>
 
 <style lang="less" scoped>
 	.container {
 		box-sizing: border-box;
 		padding: 50upx;
+
 		.user-info {
-			
+
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
 			margin-top: 30upx;
+
 			.avatar {
 				display: flex;
 				align-items: center;
+
 				image {
 					width: 90upx;
 					height: 90upx;
@@ -72,10 +124,11 @@ import request from '../../utils/request';
 				}
 			}
 		}
-		
+
 		.woodfish-box {
 			display: flex;
 			justify-content: center;
+
 			.woodfish {
 				display: flex;
 				justify-content: center;
