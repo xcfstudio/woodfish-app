@@ -13,7 +13,13 @@
 		</view>
 		<view class="woodfish-box">
 			<view class="woodfish" @click="knock">
-				木鱼
+				<view class="woodfish-imgbox" :class="{'fat-woodfish': isAnimate}">
+					<image src="../../static/woodfish_black.svg" mode="" ></image>
+				</view>
+				
+			</view>
+			<view class="title">
+				木鱼 功德网
 			</view>
 		</view>
 	</view>
@@ -29,11 +35,25 @@
 	import request from '../../utils/request';
 	import totp from 'totp-generator'
 	import conf from '../../config/appConfig'
+	import {
+		isLogin
+	} from '../../utils/isLogin';
+import { ref } from "vue";
 	export default {
 		setup() {
 			const userInfoStore = UserInfo()
 			const audioCtx = uni.createInnerAudioContext()
 			audioCtx.src = '../../static/knock.mp3'
+			
+			// 敲木鱼动画
+			const isAnimate = ref(false)
+			const animateKnock = () => {
+				isAnimate.value = !isAnimate.value
+				setTimeout(() => {
+					isAnimate.value = !isAnimate.value
+				}, 80)
+			}
+			const de_animateKnock = debounce(animateKnock, 90)
 
 			// 上传本地缓存的分数，并重置缓存
 			const upLoadScore = async () => {
@@ -66,21 +86,13 @@
 			const _debounce_uploadScore = debounce(upLoadScore, 2000)
 
 			const knock = async () => {
+				// 播放动画
+				de_animateKnock()
 				// 播放声音
 				audioCtx.stop()
 				audioCtx.play()
-
-
-
+			
 				if (userInfoStore.loginState) {
-					// const res:any = await request({
-					// 	url: '/api/gongde/woodfish/knock',
-					// 	method: 'POST',
-					// 	token: 'access'
-					// })
-					// userInfoStore.gongdeInfo.data.todayScore = res.data.todayScore
-					// console.log('登陆的用户在敲木鱼');
-
 
 					// 功德缓冲区
 					userInfoStore.gongdeCache++
@@ -94,14 +106,41 @@
 
 			return {
 				userInfoStore,
-				knock
+				knock,
+				isAnimate
+			}
+		},
+		onShow() {
+			this.userInfoStore.loginState = isLogin()
+
+			if (this.userInfoStore.loginState) {
+				this.userInfoStore.pullGongdeInfo()
+				this.userInfoStore.pullAvatar()
+
+			} else {
+				this.userInfoStore.$reset()
 			}
 		}
 	}
 </script>
 
 <style lang="less" scoped>
+	@keyframes fat {
+		0%,
+		50% {
+			transform: scale(1.1);
+		}
+	}
+	.fat-woodfish {
+		animation: fat;
+		animation-duration: 80ms;
+	}
 	.container {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
 		box-sizing: border-box;
 		padding: 50upx;
 
@@ -110,7 +149,7 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin-top: 30upx;
+			margin-top: 50upx;
 
 			.avatar {
 				display: flex;
@@ -127,7 +166,9 @@
 
 		.woodfish-box {
 			display: flex;
+			flex-direction: column;
 			justify-content: center;
+			align-items: center;
 
 			.woodfish {
 				display: flex;
@@ -137,13 +178,21 @@
 				font-size: 100upx;
 				width: 400upx;
 				height: 400upx;
-				margin-top: 300upx;
-				border-radius: 50%;
-				background-color: #000;
-				// &:active {
-				// 	width: 300upx;
-				// 	height: 300upx;
-				// }
+				margin-top: 250upx;
+				margin-bottom: 50upx;
+				.woodfish-imgbox {
+					
+					image {
+						width: 220px;
+						height: 220px;
+					}
+					
+				}
+				
+			}
+			.title {
+				font-size: 40upx;
+				color: #a6a6a6;
 			}
 		}
 	}

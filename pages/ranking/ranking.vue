@@ -7,11 +7,11 @@
 				</view>
 				<view class="data">
 					<view class="ranking">
-						12
+						第<span class="value">{{topRanking}}</span>名
 					</view>
-					<image src="../../static/grey-avatar.svg" mode=""></image>
+					<image :src="userInfoStore.avatar" mode=""></image>
 					<view class="score">
-						345345
+						<span class="value">{{topScore}}</span>功德
 					</view>
 				</view>
 
@@ -20,62 +20,149 @@
 			<view class="nav-bar">
 				<view class="nav-item" :class="{
 					'nav-toggle': navToggleA
-				}"
-				@click="toggleA">
+				}" @click="toggleA">
 					今日榜单
 				</view>
 				<view class="nav-item" :class="{
 					'nav-toggle': !navToggleA
-				}"
-				@click="toggleB">
+				}" @click="toggleB">
 					历史总榜
 				</view>
 			</view>
-			<ranking />
+			<ranking :dataArr="todayList" v-show="navToggleA" class="animate__animated animate__fadeInLeft" />
+			<ranking :dataArr="totalList" v-show="!navToggleA" class="animate__animated animate__fadeInRight" />
 		</view>
 
 	</view>
 </template>
 
 <script lang="ts">
-	import { ref } from "vue"
-import ranking from '../../components/ranking/ranking.vue'
+	import {
+		ref
+	} from "vue"
+	import ranking from '../../components/ranking/ranking.vue'
+	import request from "../../utils/request"
+	import {UserInfo} from '../../store/index'
+import { isLogin } from "../../utils/isLogin"
 	export default {
 		setup() {
+			const userInfoStore = UserInfo()
 			const navToggleA = ref(true)
+			
+
+			const todayList = ref([])
+			const totalList = ref([])
+
+			const topRanking = ref(0)
+			const topScore = ref(0)
+			
 			const toggleA = () => {
 				navToggleA.value = true
+				topRanking.value = userInfoStore.gongdeInfo.data.todayRanking
+				topScore.value = userInfoStore.gongdeInfo.data.todayScore
 			}
 			const toggleB = () => {
 				navToggleA.value = false
+				topRanking.value = userInfoStore.gongdeInfo.data.totalRanking
+				topScore.value = userInfoStore.gongdeInfo.data.totalScore
+			}
+
+			const pullTodayRanking = async () => {
+				if (navToggleA.value) {
+					toggleA()
+				} else {
+					toggleB()
+				}
+				try{
+					const res: any = await request({
+						url: '/api/gongde/ranking/daily',
+						method: 'GET'
+					})
+					if (res.code === 200) {
+						todayList.value = res.data
+					}
+					return
+				}catch(e){
+					//TODO handle the exception
+				}
+			}
+
+			const pullTotalRanking = async () => {
+				try{
+					const res: any = await request({
+						url: '/api/gongde/ranking/total',
+						method: 'GET'
+					})
+					if (res.code === 200) {
+						totalList.value = res.data
+					}
+					return
+				}catch(e){
+					//TODO handle the exception
+				}
 			}
 			return {
-				ranking, navToggleA, toggleA, toggleB
+				ranking,
+				navToggleA,
+				toggleA,
+				toggleB,
+				todayList,
+				totalList,
+				pullTodayRanking,
+				pullTotalRanking,
+				topRanking,
+				topScore,
+				userInfoStore
 			}
+		},
+		onShow() {
+			this.userInfoStore.loginState = isLogin()
+			
+			this.pullTodayRanking()
+			this.pullTotalRanking()
+			
+			if (this.userInfoStore.loginState) {
+				this.userInfoStore.pullGongdeInfo()
+				this.userInfoStore.pullAvatar()
+				
+				
+			} else {
+				this.userInfoStore.$reset()
+			}
+		},
+		async onPullDownRefresh() {
+			await Promise.all([
+				this.pullTodayRanking(),
+				this.pullTotalRanking()
+			])
+			uni.stopPullDownRefresh()
 		}
 	}
-
 </script>
 
-<style lang="less" scoped>
+<style lang="less" scoped>	
+@import '../../css/animate.css';
+
 	.nav-toggle {
 		background-image: linear-gradient(to right, #0539a1, #2178e9);
 		color: #fff;
 		font-weight: bolder;
 	}
+
 	.ranking {
 		.header {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
 			justify-content: center;
-			height: 400upx;
-			background-image: linear-gradient(130deg, #4782d5, #4a4ac0);
+			height: 450upx;
+			background-image: linear-gradient(130deg, #626dff, #3e3ebc);
 
 			.title {
 				color: #fff;
 				font-weight: bolder;
 				margin-bottom: 40upx;
+				margin-top: 60upx;
 			}
 
 			.data {
@@ -84,17 +171,25 @@ import ranking from '../../components/ranking/ranking.vue'
 				justify-content: space-between;
 				text-align: center;
 				color: #fff;
-				font-size: 32upx;
-				.ranking {
-					width: 170upx;
+				font-size: 26upx;
+				
+				.value {
+					font-size: 45upx;
+					font-weight: bolder;
 				}
+
+				.ranking {
+					width: 200upx;
+				}
+
 				image {
 					width: 180upx;
 					height: 180upx;
 					border-radius: 90upx;
 				}
+
 				.score {
-					width: 170upx;
+					width: 200upx;
 				}
 			}
 
@@ -108,6 +203,7 @@ import ranking from '../../components/ranking/ranking.vue'
 			border-radius: 30upx;
 			justify-content: center;
 			background-color: #e9eff7;
+
 			.nav-item {
 				width: 360upx;
 				text-align: center;

@@ -182,19 +182,20 @@ import request from "../../utils/request"
 		}
 		
 		.submit-btn {
-			position: absolute;
 			width: 250upx;
-			height: 60upx;
-			line-height: 60upx;
-			border-radius: 30upx;
-			text-align: center;
-			left: 50%;
-			transform: translate(-50%);
-			bottom: 60upx;
-			background-image: linear-gradient( -135deg, #6B73FF 10%, #2631ff 100%);
+			height: 70upx;
+			line-height: 70upx;
+			border-radius: 35upx;
+			background-image: linear-gradient(to right, #4553f5, #547cff);
 			color: #fff;
+			font-weight: bolder;
+			position: absolute;
+			left: 50%;
+			transform: translateX(-50%);
+			bottom: 80upx;
+			text-align: center;
 			&:active {
-				background-image: linear-gradient( -135deg, #5b61da 10%, #2029da 100%);
+				background-image: linear-gradient(to right, #3d4ada, #4a6de1);
 			}
 		}
 	}

@@ -87,15 +87,15 @@
 					class="iconfont">&#xe6ab;</span>
 			</view>
 
-			<view class="service-item update">
+			<view class="service-item update" @click="navToUpdateApp">
 				<span class="item-left"><span class="iconfont service-icon">&#xe692;</span> 检查更新</span><span
 					class="iconfont">&#xe6ab;</span>
 			</view>
-			<view class="service-item update">
+			<view class="service-item update" @click="navToAboutPage">
 				<span class="item-left"><span class="iconfont service-icon">&#xe691;</span> 关于我们</span><span
 					class="iconfont">&#xe6ab;</span>
 			</view>
-			<view class="service-item setting">
+			<view class="service-item setting" @click="navToSettings">
 				<span class="item-left"><span class="iconfont service-icon">&#xe69b;</span> 设置</span><span
 					class="iconfont">&#xe6ab;</span>
 			</view>
@@ -110,11 +110,13 @@
 	import {
 		isLogin
 	} from "../../utils/isLogin";
-	import {UserInfo} from "../../store/index"
+	import {
+		UserInfo
+	} from "../../store/index"
 	export default {
 		setup() {
 			const userInfoStore = UserInfo()
-		
+
 			// 计算等级
 			const level = computed(() => {
 				return levelRule(userInfoStore.gongdeInfo.data.totalScore)
@@ -125,19 +127,52 @@
 				if (!level || level === 0) return 0
 				return Math.ceil(level / 500)
 			}
-			
-			
+
+
 			// -------------------跳转函数---------------------
 			const navgateToContact = () => {
 				uni.navigateTo({
 					url: '../contact/contact'
 				})
 			}
-			
+
 			// 跳转至登陆界面
 			const navToLogin = () => {
 				uni.navigateTo({
 					url: '../login/login',
+					animationType: 'fade-in',
+					fail: (err) => {
+						console.log(err);
+					}
+				})
+			}
+
+			// 跳转至检查更新页面
+			const navToUpdateApp = () => {
+				uni.navigateTo({
+					url: '../checkUpdate/checkUpdate',
+					animationType: 'fade-in',
+					fail: (err) => {
+						console.log(err);
+					}
+				})
+			}
+
+			// 跳转至关于我们页面
+			const navToAboutPage = () => {
+				uni.navigateTo({
+					url: '../about/about',
+					animationType: 'fade-in',
+					fail: (err) => {
+						console.log(err);
+					}
+				})
+			}
+
+			// 跳转至设置页面
+			const navToSettings = () => {
+				uni.navigateTo({
+					url: '/pages/setting/setting',
 					animationType: 'fade-in',
 					fail: (err) => {
 						console.log(err);
@@ -152,16 +187,20 @@
 				// avatarPulled,
 				// reset,
 				navgateToContact,
-				userInfoStore
+				userInfoStore,
+				navToUpdateApp,
+				navToAboutPage,
+				navToSettings
 			}
 		},
 		onShow() {
 			this.userInfoStore.loginState = isLogin()
-			
+
 			if (this.userInfoStore.loginState) {
 				this.userInfoStore.pullGongdeInfo()
+				this.userInfoStore.pullAvatar()
 				// this.pullGongdeInfo()
-				
+
 			} else {
 				this.userInfoStore.$reset()
 			}
@@ -178,7 +217,7 @@
 </script>
 
 <style lang="less" scoped>
-	.container {
+		.container {
 		box-sizing: border-box;
 		padding: 50upx;
 
@@ -186,7 +225,7 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
-			margin-top: 30upx;
+			margin-top: 50upx;
 
 			.left {
 				display: flex;
@@ -307,6 +346,7 @@
 				margin-bottom: 20upx;
 				display: flex;
 				justify-content: space-between;
+
 				&:active {
 					font-weight: bold;
 				}

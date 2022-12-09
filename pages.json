@@ -1,4 +1,5 @@
 {
+	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
@@ -6,6 +7,7 @@
 				"navigationBarTitleText": "功德网",
 				"transparentTitle": "always"
 			}
+			
 
 		}, {
 			"path": "pages/login/login",
@@ -43,8 +45,34 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",
-                "enablePullDownRefresh": false,
+                "enablePullDownRefresh": true,
 				"transparentTitle": "always"
+            }
+            
+        }
+        
+        ,{
+            "path" : "pages/checkUpdate/checkUpdate",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "检查更新",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于我们",
+				"enablePullDownRefresh": false
+			}
+		}
+        ,{
+            "path" : "pages/setting/setting",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "设置",
+                "enablePullDownRefresh": false
             }
             
         }
@@ -52,42 +80,47 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "功德网",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#F8F8F8"
 	},
 	"tabBar": {
 		"position": "bottom",
+		"iconfontSrc": "./iconfont/iconfont.ttf",
+		"fontSize": "10px",
+		"height": "60px",
 		"list": [{
 				"pagePath": "pages/index/index",
-				"text": "首页"
+				"text": "首页",
+				"iconfont": {
+					"text": "\ue685",
+					"fontSize": "25px",
+					"selectedColor": "#5466ff",
+					"color": "#323232"
+				}
+			},
+			{
+				"pagePath": "pages/ranking/ranking",
+				"text": "排行榜",
+				"iconfont": {
+					"text": "\ue66e",
+					"fontSize": "25px",
+					"selectedColor": "#5466ff",
+					"color": "#323232"
+				}
 			},
 			{
 				"pagePath": "pages/mypage/mypage",
-				"text": "我的"
-			},
-			{
-				"pagePath": "pages/dev/dev",
-				"text": "devtool"
+				"text": "我的",
+				"iconfont": {
+					"text": "\ue6a2",
+					"fontSize": "25px",
+					"selectedColor": "#5466ff",
+					"color": "#323232"
+				}
 			}
+			
 		],
 		"borderStyle": "white"
 	},
-	"uniIdRouter": {},
-	"condition": {
-		"current": 0,
-		"list": [{
-				"name": "index",
-				"path": "pages/index/index"
-
-			},
-			{
-				"name": "login",
-				"path": "pages/login/login"
-			},
-			{
-				"name": "mypage",
-				"path": "pages/mypage/mypage"
-			}
-		]
-	}
+	"uniIdRouter": {}
+	
 }
