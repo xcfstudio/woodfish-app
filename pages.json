@@ -86,13 +86,13 @@
 		"position": "bottom",
 		"iconfontSrc": "./iconfont/iconfont.ttf",
 		"fontSize": "10px",
-		"height": "60px",
+		"height": "50px",
 		"list": [{
 				"pagePath": "pages/index/index",
 				"text": "首页",
 				"iconfont": {
 					"text": "\ue685",
-					"fontSize": "25px",
+					"fontSize": "22px",
 					"selectedColor": "#5466ff",
 					"color": "#323232"
 				}
@@ -102,7 +102,7 @@
 				"text": "排行榜",
 				"iconfont": {
 					"text": "\ue66e",
-					"fontSize": "25px",
+					"fontSize": "22px",
 					"selectedColor": "#5466ff",
 					"color": "#323232"
 				}
@@ -112,7 +112,7 @@
 				"text": "我的",
 				"iconfont": {
 					"text": "\ue6a2",
-					"fontSize": "25px",
+					"fontSize": "22px",
 					"selectedColor": "#5466ff",
 					"color": "#323232"
 				}
