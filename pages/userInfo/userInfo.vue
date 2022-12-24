@@ -2,7 +2,7 @@
 	<view>
 		<view class="container">
 			<image class="avatar" :src="userInfoStore.avatar" mode=""></image>
-			<view class="btn linkqq">
+			<view class="btn linkqq" @click="linkQQavatar">
 				绑定QQ头像
 			</view>
 			<view class="info">
@@ -147,9 +147,40 @@ import request from "../../utils/request"
 				console.log(res);
 			}
 			
+			const linkQQavatar = () => {
+				uni.showModal({
+					editable: true,
+					title: '绑定QQ头像',
+					placeholderText: '输入QQ号',
+					success: async (res) => {
+						if (res.confirm) {
+							uni.showLoading({
+								title: '请求QQ接口...'
+							})
+							console.log(res);
+							const r:any = await request({
+								url: '/api/users/information/qqavatar',
+								method: 'POST',
+								token: 'access',
+								data: {
+									qqNumber: res.content
+								}
+							})
+							if (r.code === 200) {
+								userInfoStore.pullAvatar()
+								uni.hideLoading()
+								uni.showToast({
+									icon:"success",
+									title: '头像已更新'
+								})
+							}
+						}
+					}
+				})
+			}
 			return {
 				userName, gender, birthday, radioHandler, pickerHandler, userInfoStore,
-				pullInfo, sameName, submit
+				pullInfo, sameName, submit, linkQQavatar
 			}
 		},
 		onShow() {

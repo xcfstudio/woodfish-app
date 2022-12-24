@@ -36,6 +36,9 @@ import request from '../../utils/request'
 	export default {
 		setup() {
 			const checkUpdate = async () => {
+				uni.showLoading({
+					title: '请求服务器...'
+				})
 				const res:any = await request({
 					url: '/api/feedback/checkupdate',
 					method: 'POST',
@@ -44,6 +47,7 @@ import request from '../../utils/request'
 						platform: 'android'
 					}
 				})
+				uni.hideLoading()
 				if (res && res.code === 200) {
 					if (res.data.update) {
 						uni.showModal({

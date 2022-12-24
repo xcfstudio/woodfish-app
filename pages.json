@@ -111,7 +111,7 @@
 	},
 	"tabBar": {
 		"position": "bottom",
-		"iconfontSrc": "./iconfont/iconfont.ttf",
+		"iconfontSrc": "./static/iconfont/iconfont.ttf",
 		"fontSize": "10px",
 		"height": "50px",
 		"list": [{

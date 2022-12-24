@@ -60,8 +60,7 @@ import request from "../../utils/request"
 					})
 					return
 				}
-				uni.showToast({
-					icon:"loading",
+				uni.showLoading({
 					title: '提交中...'
 				})
 				const res:any = await request({

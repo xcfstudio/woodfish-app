@@ -44,9 +44,9 @@ import {UserInfo} from './store/index'
 	
 	@font-face {
 	  font-family: 'iconfont';
-	  src: url('./iconfont/iconfont.woff2?t=1670057584831') format('woff2'),
-	       url('./iconfont/iconfont.woff?t=1670057584831') format('woff'),
-	       url('./iconfont/iconfont.ttf?t=1670057584831') format('truetype');
+	  src: url('static/iconfont/iconfont.woff2?t=1670057584831') format('woff2'),
+	       url('static/iconfont/iconfont.woff?t=1670057584831') format('woff'),
+	       url('static/iconfont/iconfont.ttf?t=1670057584831') format('truetype');
 	}
 	
 	.iconfont {

@@ -1,14 +1,14 @@
 <template>
 	<view class="container">
 		<view class="user-info">
-			<view class="avatar">
+			<view class="avatar" @click="navToUserInfo">
 				<image :src="userInfoStore.avatar" mode=""></image>
 				<view class="username">
 					{{userInfoStore.gongdeInfo.data.username}}
 				</view>
 			</view>
 			<view class="score">
-				今日<span>{{userInfoStore.gongdeInfo.data.todayScore}}</span>功德
+				今日<span class="val">{{userInfoStore.gongdeInfo.data.todayScore}}</span>功德
 			</view>
 		</view>
 		<view class="woodfish-box">
@@ -103,11 +103,18 @@ import { ref } from "vue";
 					_debounce_uploadScore()
 				}
 			}
+			
+			const navToUserInfo = () => {
+				uni.navigateTo({
+					url: '/pages/userInfo/userInfo'
+				})
+			}
 
 			return {
 				userInfoStore,
 				knock,
-				isAnimate
+				isAnimate,
+				navToUserInfo
 			}
 		},
 		onShow() {
@@ -156,10 +163,18 @@ import { ref } from "vue";
 				align-items: center;
 
 				image {
-					width: 90upx;
-					height: 90upx;
+					width: 100upx;
+					height: 100upx;
 					margin-right: 20upx;
 					border-radius: 50%;
+				}
+			}
+			
+			.score {
+				.val {
+					font-weight: bolder;
+					font-size: 45upx;
+					padding: 0 10upx;
 				}
 			}
 		}

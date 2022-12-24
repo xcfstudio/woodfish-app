@@ -2,8 +2,8 @@
 	<view class="container">
 
 		<view class="top-info">
-			<view class="left">
-				<image :src="userInfoStore.avatar" mode="" class="avatar" @click="navToUserInfo"></image>
+			<view class="left" @click="navToUserInfo">
+				<image :src="userInfoStore.avatar" mode="" class="avatar" ></image>
 				<view class="user-info">
 					<view class="username">
 						{{userInfoStore.gongdeInfo.data.username}}
@@ -140,7 +140,6 @@
 			const navToLogin = () => {
 				uni.navigateTo({
 					url: '../login/login',
-					animationType: 'fade-in',
 					fail: (err) => {
 						console.log(err);
 					}
@@ -151,7 +150,6 @@
 			const navToUpdateApp = () => {
 				uni.navigateTo({
 					url: '../checkUpdate/checkUpdate',
-					animationType: 'fade-in',
 					fail: (err) => {
 						console.log(err);
 					}
@@ -162,7 +160,6 @@
 			const navToAboutPage = () => {
 				uni.navigateTo({
 					url: '../about/about',
-					animationType: 'fade-in',
 					fail: (err) => {
 						console.log(err);
 					}
@@ -173,7 +170,6 @@
 			const navToSettings = () => {
 				uni.navigateTo({
 					url: '/pages/setting/setting',
-					animationType: 'fade-in',
 					fail: (err) => {
 						console.log(err);
 					}
