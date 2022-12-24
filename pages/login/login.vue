@@ -11,14 +11,14 @@
 				placeholder-style="color: #c0c0c0">
 		</view>
 		<view class="btnbox">
-			<view class="registry btn">注册</view>
+			<view class="registry btn" @click="navgateToReg">注册</view>
 			<view class="login btn" @click="login">登陆</view>
 		</view>
 
 	</view>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 	import {
 		computed,
 		ref,
@@ -27,102 +27,137 @@
 	import {
 		debounce
 	} from "../../utils/debounce";
-	
+
 	import request from "../../utils/request";
 	import {
 		setToken
 	} from '../../utils/setToken'
-	import {UserInfo} from '../../store/index'
+	import {
+		UserInfo
+	} from '../../store/index'
 
-const userInfoStore = UserInfo()
-	// 用户头像链接
-	const topAvatar = ref('../../static/grey-avatar.svg')
-	// 控制错误信息显示
-	const errMsgShow = ref(false)
+	export default {
+		setup() {
+			const userInfoStore = UserInfo()
+			// 用户头像链接
+			const topAvatar = ref('../../static/grey-avatar.svg')
+			// 控制错误信息显示
+			const errMsgShow = ref(false)
 
-	const account = ref('')
-	const password = ref('')
-	// 密码哈希处理
-	const hashPwd = computed(() => {
-		return password.value
-	})
-
-	const getAvatar = async () => {
-		try {
-			if (account.value.length === 0) return
-			const res: any = await request({
-				url: `/api/users/avatar/${encodeURI(account.value)}`,
-				method: 'GET'
+			const account = ref('')
+			const password = ref('')
+			// 密码哈希处理
+			const hashPwd = computed(() => {
+				return password.value
 			})
-			if (res && res.data.avatar) {
-				topAvatar.value = res.data.avatar
+
+			const getAvatar = async () => {
+				try {
+					if (account.value.length === 0) return
+					const res: any = await request({
+						url: `/api/users/avatar/${encodeURI(account.value)}`,
+						method: 'GET'
+					})
+					if (res && res.data.avatar) {
+						topAvatar.value = res.data.avatar
+					}
+
+				} catch (e) {
+					//TODO handle the exception
+				}
 			}
-			
-		} catch (e) {
-			//TODO handle the exception
+
+			// 防抖
+			const _debounce = debounce(getAvatar, 500)
+
+			watch(account, () => {
+				_debounce()
+			})
+
+
+			const login = async () => {
+				if (account.value.length === 0 || password.value.length === 0) {
+					uni.showToast({
+						title: '请完整输入',
+						icon: "error"
+					})
+					return
+				}
+				try {
+					const res: any = await request({
+						url: '/api/users/login/',
+						data: {
+							account: account.value,
+							password: hashPwd.value
+						},
+						method: 'POST'
+					})
+					if (res.code === 200) {
+						uni.showToast({
+							icon: "success",
+							title: '登录成功',
+						})
+						// 缓存token
+						await setToken('access', res.data.accesstoken)
+						await setToken('refresh', res.data.refreshtoken)
+
+						// 设置登陆状态
+						userInfoStore.loginState = true
+
+						// 跳转主界面
+						uni.switchTab({
+							url: '../mypage/mypage'
+						})
+						// console.log('access', await getToken('access'));
+						// console.log('refresh', await getToken('refresh'));
+
+
+
+					} else {
+						uni.showToast({
+							icon: "error",
+							title: '登录失败'
+						})
+					}
+				} catch (e) {
+					uni.showToast({
+						icon: "error",
+						title: '网络异常'
+					})
+					console.log(e);
+				}
+
+
+			}
+
+			const navgateToReg = () => {
+				uni.redirectTo({
+					url: "/pages/registry/registry"
+				})
+			}
+			return {
+				userInfoStore,
+				topAvatar,
+				errMsgShow,
+				account,
+				password,
+				hashPwd,
+				getAvatar,
+				// _debounce,
+				login,
+				navgateToReg
+			}
+		}
+	,
+	onLoad(option:any) {
+		if (option && option.email) {
+			this.account = atob(option.email)
+			this.password = atob(option.pwd)
+			console.log(this.password);
 		}
 	}
-
-	// 防抖
-	const _debounce = debounce(getAvatar, 500)
-
-	watch(account, () => {
-		_debounce()
-	})
-
-
-	const login = async () => {
-		if (account.value.length === 0 || password.value.length === 0) {
-			uni.showToast({
-				title: '请完整输入',
-				icon: "error"
-			})
-			return
-		}
-		try {
-			const res: any = await request({
-				url: '/api/users/login/',
-				data: {
-					account: account.value,
-					password: hashPwd.value
-				},
-				method: 'POST'
-			})
-			if (res.code === 200) {
-				uni.showToast({
-					icon: "success",
-					title: '登录成功',
-				})
-				// 缓存token
-				await setToken('access', res.data.accesstoken)
-				await setToken('refresh', res.data.refreshtoken)
-
-				// 设置登陆状态
-				userInfoStore.loginState = true
-
-				// 跳转主界面
-				uni.switchTab({
-					url: '../mypage/mypage'
-				})
-				// console.log('access', await getToken('access'));
-				// console.log('refresh', await getToken('refresh'));
-
-			} else {
-				uni.showToast({
-					icon: "error",
-					title: '登录失败'
-				})
-			}
-		} catch (e) {
-			uni.showToast({
-				icon: "error",
-				title: '网络异常'
-			})
-			console.log(e);
-		}
-
-
 	}
+	
 </script>
 
 <style lang="less" scoped>
@@ -189,6 +224,7 @@ const userInfoStore = UserInfo()
 				width: 300upx;
 				color: #fff;
 				background-image: linear-gradient(to right, #4553f5, #547cff);
+
 				&:active {
 					background-image: linear-gradient(to right, #3945cb, #496fdf);
 				}

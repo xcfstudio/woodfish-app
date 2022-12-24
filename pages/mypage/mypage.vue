@@ -3,7 +3,7 @@
 
 		<view class="top-info">
 			<view class="left">
-				<image :src="userInfoStore.avatar" mode="" class="avatar"></image>
+				<image :src="userInfoStore.avatar" mode="" class="avatar" @click="navToUserInfo"></image>
 				<view class="user-info">
 					<view class="username">
 						{{userInfoStore.gongdeInfo.data.username}}
@@ -179,6 +179,15 @@
 					}
 				})
 			}
+			
+			// 跳转至个人信息页面
+			const navToUserInfo = () => {
+				if (userInfoStore.loginState) {
+					uni.navigateTo({
+						url: '/pages/userInfo/userInfo'
+					})
+				}
+			}
 
 			return {
 				level,
@@ -190,7 +199,8 @@
 				userInfoStore,
 				navToUpdateApp,
 				navToAboutPage,
-				navToSettings
+				navToSettings,
+				navToUserInfo
 			}
 		},
 		onShow() {

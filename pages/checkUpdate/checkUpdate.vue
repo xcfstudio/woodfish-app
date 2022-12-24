@@ -40,7 +40,7 @@ import request from '../../utils/request'
 					url: '/api/feedback/checkupdate',
 					method: 'POST',
 					data: {
-						version: '1.0.1',
+						version: '1.0.0',
 						platform: 'android'
 					}
 				})
@@ -49,6 +49,7 @@ import request from '../../utils/request'
 						uni.showModal({
 							content: res.data.details,
 							title:res.message,
+							confirmText: "更新"
 						})
 						return
 					}
