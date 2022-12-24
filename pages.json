@@ -76,6 +76,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/changePassword/changePassword",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "修改密码",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

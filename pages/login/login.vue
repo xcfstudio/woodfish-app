@@ -11,8 +11,8 @@
 				placeholder-style="color: #c0c0c0">
 		</view>
 		<view class="btnbox">
-			<view class="login btn" @click="login">登陆</view>
 			<view class="registry btn">注册</view>
+			<view class="login btn" @click="login">登陆</view>
 		</view>
 
 	</view>
@@ -151,12 +151,12 @@ const userInfoStore = UserInfo()
 			.account,
 			.password {
 				box-sizing: border-box;
-				height: 90upx;
+				height: 80upx;
 				padding: 15upx 45upx;
-				background-color: #e3eefd;
-				border-radius: 45upx;
+				background-color: #e6f3f9;
+				border-radius: 20upx;
 				margin-top: 25upx;
-				font-size: 35upx;
+				font-size: 30upx;
 				// border-bottom: 2px solid #577bff;
 			}
 
@@ -167,27 +167,35 @@ const userInfoStore = UserInfo()
 
 
 		.btnbox {
-			margin-top: 50upx;
+			margin-top: 40upx;
+			display: flex;
+			width: 500upx;
+			justify-content: space-around;
 
 			.btn {
 				box-sizing: border-box;
-				height: 90upx;
-				width: 500upx;
+				height: 80upx;
+				width: 150upx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				border-radius: 45upx;
+				border-radius: 20upx;
 				margin-bottom: 20upx;
+				font-weight: bold;
 
 			}
 
 			.login {
+				width: 300upx;
 				color: #fff;
-				background-image: linear-gradient(135deg, #ABDCFF 10%, #0396FF 100%);
+				background-image: linear-gradient(to right, #4553f5, #547cff);
+				&:active {
+					background-image: linear-gradient(to right, #3945cb, #496fdf);
+				}
 			}
 
 			.registry {
-				border: 1px solid #0396FF;
+				border: 1px solid #65c2ff;
 			}
 		}
 

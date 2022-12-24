@@ -2,8 +2,8 @@
 	<view>
 		<view class="setting">
 			<view class="list">
-				<view class="item">
-					账号与安全
+				<view v-if="loginstate" class="item" @click="navgateToChangePwd">
+					修改密码
 				</view>
 				<view class="item night-mode">
 					<view class="left">
@@ -44,8 +44,15 @@ import { isLogin } from "../../utils/isLogin"
 				uni.navigateBack()
 				
 			}
+			
+			// ---------NAVGATE---------
+			const navgateToChangePwd = () => {
+				uni.navigateTo({
+					url: '/pages/changePassword/changePassword'
+				})
+			}
 			return {
-					logout, loginstate, syncNightMode, handleSwitchChangeSyncNightModel
+					logout, loginstate, syncNightMode, handleSwitchChangeSyncNightModel, navgateToChangePwd
 				}
 		},
 		onShow() {

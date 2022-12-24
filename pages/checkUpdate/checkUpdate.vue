@@ -23,7 +23,7 @@
 				</view>
 			</view>
 			
-			<view class="update-btn">
+			<view class="update-btn" @click="checkUpdate">
 				检查更新
 			</view>
 		</view>
@@ -31,15 +31,37 @@
 	</view>
 </template>
 
-<script>
+<script lang="ts">
+import request from '../../utils/request'
 	export default {
-		data() {
-			return {
-				
+		setup() {
+			const checkUpdate = async () => {
+				const res:any = await request({
+					url: '/api/feedback/checkupdate',
+					method: 'POST',
+					data: {
+						version: '1.0.1',
+						platform: 'android'
+					}
+				})
+				if (res && res.code === 200) {
+					if (res.data.update) {
+						uni.showModal({
+							content: res.data.details,
+							title:res.message,
+						})
+						return
+					}
+				}
+				uni.showToast({
+					icon:'none',
+					title: "已是最新版"
+				})
 			}
-		},
-		methods: {
 			
+			return {
+				checkUpdate
+			}
 		}
 	}
 </script>
