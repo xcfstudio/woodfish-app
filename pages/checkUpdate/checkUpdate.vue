@@ -20,6 +20,10 @@
 							<p>3. 简洁个人信息卡片</p>
 						</view>
 					</view>
+					
+				</view>
+				<view class="progress" v-if="percent !== 0">
+					<progress :percent="percent" show-info :stroke-width="3" />
 				</view>
 			</view>
 			
@@ -32,9 +36,16 @@
 </template>
 
 <script lang="ts">
+import { ref } from "vue"
+import { throttle } from "../../utils/debounce"
 import request from '../../utils/request'
 	export default {
 		setup() {
+			const percent = ref(0)
+			const setPercent = (p: number) => {
+				percent.value = p
+			}
+			const _th_setPercent = throttle(setPercent, 200)
 			const checkUpdate = async () => {
 				uni.showLoading({
 					title: '请求服务器...'
@@ -53,7 +64,28 @@ import request from '../../utils/request'
 						uni.showModal({
 							content: res.data.details,
 							title:res.message,
-							confirmText: "更新"
+							confirmText: "更新",
+							success: (option) => {
+								if (option.confirm) {
+									const downloadTask = uni.downloadFile({
+										url: res.data.link,
+										success: (res) => {
+											setTimeout(() => {
+												setPercent(100)
+												
+												plus.runtime.install(res.tempFilePath, {
+													force: true
+												}, () => {
+													plus.runtime.restart()
+												})
+											}, 500)
+										}
+									})
+									downloadTask.onProgressUpdate(res => {
+										_th_setPercent(res.progress)
+									})
+								}
+							}
 						})
 						return
 					}
@@ -65,7 +97,7 @@ import request from '../../utils/request'
 			}
 			
 			return {
-				checkUpdate
+				checkUpdate, percent
 			}
 		}
 	}
@@ -107,6 +139,15 @@ import request from '../../utils/request'
 						margin-top: 10upx;
 						color: #4d4d4d;
 					}
+				}
+			}
+			.progress {
+				margin-top: 100upx;
+				display: flex;
+				align-items: center;
+				height: 50rpx;
+				progress {
+					width: 300upx;
 				}
 			}
 		}

@@ -124,7 +124,7 @@
 						icon: "error",
 						title: '网络异常'
 					})
-					console.log(e);
+					// console.log(e);
 				}
 
 
@@ -153,7 +153,7 @@
 		if (option && option.email) {
 			this.account = atob(option.email)
 			this.password = atob(option.pwd)
-			console.log(this.password);
+			// console.log(this.password);
 		}
 	}
 	}

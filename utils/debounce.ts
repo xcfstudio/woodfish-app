@@ -9,6 +9,18 @@ function debounce(fn: Function, delay: number) {
   }
 }
 
+function throttle(fn: Function, delay: number) {
+      let timeout = null
+      return function(...args: any) {
+        if(!timeout){
+          timeout = setTimeout(()=>{
+            timeout = null;
+            fn(...args)
+          },delay)
+        }
+      }
+    }
+
 export {
-	debounce
+	debounce, throttle
 }

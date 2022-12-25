@@ -37,7 +37,7 @@ const UserInfo = defineStore('userInfo', {
 					token: 'access'
 				})
 				this.gongdeInfo.data = res.data
-				console.log('已更新', res);
+				// console.log('已更新', res);
 				uni.stopPullDownRefresh()
 			}catch(e){
 				//TODO handle the exception

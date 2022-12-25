@@ -53,7 +53,7 @@ import request from "../../utils/request"
 			
 			const radioHandler = (e:any) => {
 				gender.value = e.detail.value
-				console.log(gender.value);
+				// console.log(gender.value);
 			}
 			const pickerHandler = (e:any) => {
 				birthday.value = e.detail.value
@@ -67,7 +67,7 @@ import request from "../../utils/request"
 					method: 'GET',
 					token: 'access'
 				})
-				console.log(res);
+				// console.log(res);
 				if (res && res.code === 200) {
 					userName.value = res.data.username
 					if (res.data.gender) {
@@ -86,7 +86,7 @@ import request from "../../utils/request"
 					url: `/api/users/exist/name/${encodeURI(name)}`,
 					method: 'GET'
 				})
-				console.log(res);
+				// console.log(res);
 				if (res && res.code === 200) {
 					if (res.data.exist) {
 						if (res.data.dataValues.uid !== userInfoStore.gongdeInfo.data.uid) {
@@ -144,7 +144,7 @@ import request from "../../utils/request"
 						uni.navigateBack()
 					}, 1000)
 				}
-				console.log(res);
+				// console.log(res);
 			}
 			
 			const linkQQavatar = () => {
@@ -157,7 +157,7 @@ import request from "../../utils/request"
 							uni.showLoading({
 								title: '请求QQ接口...'
 							})
-							console.log(res);
+							// console.log(res);
 							const r:any = await request({
 								url: '/api/users/information/qqavatar',
 								method: 'POST',

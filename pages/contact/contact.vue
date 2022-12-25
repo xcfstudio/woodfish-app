@@ -84,7 +84,7 @@ import request from "../../utils/request"
 						icon: 'error',
 						title: '网络错误'
 					})
-					console.log(e);
+					// console.log(e);
 				}
 			}
 			

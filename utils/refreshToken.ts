@@ -13,7 +13,7 @@ const refreshToken = async () => {
 		}) as any
 		
 		if (res.code !== 200) {
-			console.log(res);
+			// console.log(res);
 			logout('out')
 			uni.switchTab({
 				url: '../pages/mypage/mypage'
@@ -29,7 +29,7 @@ const refreshToken = async () => {
 			setToken('access', accesstoken),
 			setToken('refresh', refreshtoken)
 		])
-		console.log('token is setted!')
+		// console.log('token is setted!')
 		return true
 	}
 }

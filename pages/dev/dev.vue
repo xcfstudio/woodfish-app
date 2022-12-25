@@ -29,7 +29,7 @@ const pullInfo = async () => {
 		method: 'GET',
 		token: 'access'
 	})
-	console.log(res);
+	// console.log(res);
 	const s = JSON.stringify(res)
 	info.value = s
 	

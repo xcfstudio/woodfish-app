@@ -57,7 +57,7 @@ import { ref } from "vue";
 
 			// 上传本地缓存的分数，并重置缓存
 			const upLoadScore = async () => {
-				console.log('upload');
+				// console.log('upload');
 				const score = userInfoStore.gongdeCache
 				request({
 					url: '/api/gongde/woodfish/knock2',
@@ -72,7 +72,7 @@ import { ref } from "vue";
 						})
 					}
 				}).then((v: any) => {
-					console.log(v);
+					// console.log(v);
 					if (v.code === 200) {
 						userInfoStore.gongdeInfo.data.todayScore = v.data.todayScore
 					}

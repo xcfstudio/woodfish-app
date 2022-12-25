@@ -31,7 +31,7 @@ import { isLogin } from "../../utils/isLogin"
 			
 			const handleSwitchChangeSyncNightModel = (e: any) => {
 				setSyncNightMode(e.detail.value)
-				console.log('switch changed', e.detail.value);
+				// console.log('switch changed', e.detail.value);
 			}
 			const setSyncNightMode = (value: boolean) => {
 				uni.setStorage({
