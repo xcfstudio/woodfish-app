@@ -16,13 +16,11 @@ npm install
 yarn install
 ```
 
-
-
 + 使用`HbuildeX`打开项目，修改配置文件
 
 项目配置文件位于：`woodfish-app/config/appConfig.ts`
 
-修改`baseUrl`字段的值，使其与本机IP保持一致（不建议修改为127.0.0.1或localhost，不方便镇机调试），端口号与后端保持一致
+修改`baseUrl`字段的值，使其与本机IP保持一致（不建议修改为127.0.0.1或localhost，不方便真机调试），端口号与后端保持一致
 
 查看本机IP方法：
 
@@ -34,16 +32,10 @@ ifconfig | grep '192'
 ipconfig
 ```
 
-
-
 + 需要保持后端正常运行
   
   在`HbuilderX`编译运行项目
 
-
-
 ## 关于作者
 
-前端开发者与工业设计师，擅长TS全栈开发、UI设计。个人网站：[https://xiecangfeng.com](https://xiecangfeng.com)
-
-
+Eric Xie，前端开发者与工业设计师，擅长TS全栈开发、UI设计。个人网站：[https://xiecangfeng.com](https://xiecangfeng.com)
