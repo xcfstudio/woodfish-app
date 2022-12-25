@@ -1,6 +1,7 @@
 <script>
 import { intervalRefreshToken, refreshToken } from './utils/refreshToken'
 import {UserInfo} from './store/index'
+import request from './utils/request'
 	export default {
 		setup(){
 			const userInfoStore = UserInfo()
@@ -15,6 +16,26 @@ import {UserInfo} from './store/index'
 				this.userInfoStore.loginState = true
 			}
 			intervalRefreshToken()
+			const checkUpdate = await request({
+				url: '/api/feedback/checkupdate',
+				method: 'POST',
+				data: {
+					version: '1.0.0',
+					platform: 'android'
+				}
+			})
+			if (checkUpdate.code===200 && checkUpdate.data.update) {
+				uni.showModal({
+					content: '有新版本，是否更新？',
+					success: (option) => {
+						if (option.confirm) {
+							uni.navigateTo({
+								url: '/pages/checkUpdate/checkUpdate?auto=1'
+							})
+						}
+					}
+				})
+			}
 			
 		},
 		onShow: function() {

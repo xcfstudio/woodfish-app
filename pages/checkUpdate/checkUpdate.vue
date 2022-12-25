@@ -41,12 +41,14 @@ import { throttle } from "../../utils/debounce"
 import request from '../../utils/request'
 	export default {
 		setup() {
+			const auto = false
 			const percent = ref(0)
 			const setPercent = (p: number) => {
 				percent.value = p
 			}
 			const _th_setPercent = throttle(setPercent, 200)
-			const checkUpdate = async () => {
+			
+			const checkUpdate = async (auto?: boolean) => {
 				uni.showLoading({
 					title: '请求服务器...'
 				})
@@ -61,32 +63,40 @@ import request from '../../utils/request'
 				uni.hideLoading()
 				if (res && res.code === 200) {
 					if (res.data.update) {
-						uni.showModal({
-							content: res.data.details,
-							title:res.message,
-							confirmText: "更新",
-							success: (option) => {
-								if (option.confirm) {
-									const downloadTask = uni.downloadFile({
-										url: res.data.link,
-										success: (res) => {
-											setTimeout(() => {
-												setPercent(100)
-												
-												plus.runtime.install(res.tempFilePath, {
-													force: true
-												}, () => {
-													plus.runtime.restart()
-												})
-											}, 500)
-										}
-									})
-									downloadTask.onProgressUpdate(res => {
-										_th_setPercent(res.progress)
-									})
+						const downloadInstall = () => {
+							const downloadTask = uni.downloadFile({
+								url: res.data.link,
+								success: (res) => {
+									setTimeout(() => {
+										setPercent(100)
+										
+										plus.runtime.install(res.tempFilePath, {
+											force: true
+										}, () => {
+											plus.runtime.restart()
+										})
+									}, 500)
 								}
-							}
-						})
+							})
+							downloadTask.onProgressUpdate(res => {
+								_th_setPercent(res.progress)
+							})
+						}
+						if (!auto) {
+							console.log(auto);
+							uni.showModal({
+								content: res.data.details,
+								title:res.message,
+								confirmText: "更新",
+								success: (option) => {
+									if (option.confirm) {
+										downloadInstall()
+									}
+								}
+							})
+						} else {
+							downloadInstall()
+						}
 						return
 					}
 				}
@@ -97,7 +107,12 @@ import request from '../../utils/request'
 			}
 			
 			return {
-				checkUpdate, percent
+				checkUpdate, percent, auto
+			}
+		},
+		onLoad(option: any){
+			if (option.auto==='1') {
+				this.checkUpdate(true)
 			}
 		}
 	}
