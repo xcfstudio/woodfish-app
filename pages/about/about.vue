@@ -12,7 +12,7 @@
 					<image class="icon" src="../../static/gitee.svg" mode=""></image>
 				</view>
 				<view class="p">
-					<p>木鱼 功德网是一个基于MIT协议的开源项目</p>
+					<p>木鱼 功德网是一个基于Apache协议的开源项目</p>
 					<p>在github、gitlab、gitee平台同步更新</p>
 					<p>官网: https://xcfstudio.com/woodfish</p>
 				</view>
