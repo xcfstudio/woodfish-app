@@ -124,15 +124,17 @@ import request from "../../utils/request"
 					icon: 'loading',
 					title: '请求服务器...'
 				})
+				const postData = {
+					username: userName.value,
+					gender: gender.value,
+					birthday: birthday.value
+				}
+				if (birthday.value === '点击选择') delete postData.birthday
 				const res:any = await request({
 					url: '/api/users/information/',
 					method: 'PUT',
 					token: 'access',
-					data: {
-						username: userName.value,
-						gender: gender.value,
-						birthday: birthday.value
-					}
+					data: postData
 				})
 				if (res.code === 200) {
 					uni.hideToast()
