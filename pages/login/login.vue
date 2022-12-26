@@ -84,6 +84,9 @@
 					return
 				}
 				try {
+					uni.showLoading({
+						title: '登录中'
+					})
 					const res: any = await request({
 						url: '/api/users/login/',
 						data: {
@@ -93,6 +96,7 @@
 						method: 'POST'
 					})
 					if (res.code === 200) {
+						uni.hideLoading()
 						uni.showToast({
 							icon: "success",
 							title: '登录成功',

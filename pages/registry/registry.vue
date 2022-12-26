@@ -72,6 +72,9 @@ import request from "../../utils/request"
 					})
 					return
 				}
+				uni.showLoading({
+					title: '注册中'
+				})
 				const res:any = await request({
 					url: '/api/users/register',
 					method: 'POST',
@@ -81,6 +84,7 @@ import request from "../../utils/request"
 					}
 				})
 				if (res && res.code === 200) {
+					uni.hideLoading()
 					uni.showToast({
 						icon:"success",
 						title:"注册成功"

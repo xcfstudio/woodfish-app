@@ -105,6 +105,7 @@ import { ref } from "vue";
 			}
 			
 			const navToUserInfo = () => {
+				if (userInfoStore.loginState)
 				uni.navigateTo({
 					url: '/pages/userInfo/userInfo'
 				})
