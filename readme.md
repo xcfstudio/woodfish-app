@@ -1,4 +1,6 @@
-# 木鱼 功德网 前端项目 [uniApp]
+# 木鱼功德网 前端 [uniApp]
+
+[![zzCq7d.png](https://s1.ax1x.com/2022/12/27/zzCq7d.png)](https://imgse.com/i/zzCq7d)
 
 ## 前言
 
