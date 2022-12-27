@@ -3,7 +3,7 @@
 [![zzCq7d.png](https://s1.ax1x.com/2022/12/27/zzCq7d.png)](https://imgse.com/i/zzCq7d)
 
 ## APP主要界面展示
-[![zz1uJf.jpg](https://s1.ax1x.com/2022/12/27/zz1uJf.jpg)](https://imgse.com/i/zz1uJf)
+[![zz1hlD.jpg](https://s1.ax1x.com/2022/12/27/zz1hlD.jpg)](https://imgse.com/i/zz1hlD)
 
 ## 关联后端项目
 + GitLab: https://gitlab.com/xcfstudio/woodfish-server
