@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Eric Xie",
+  "license": "Apache",
   "dependencies": {
     "@types/totp-generator": "^0.0.4",
     "totp-generator": "^0.0.14"
