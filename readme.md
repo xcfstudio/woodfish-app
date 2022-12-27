@@ -2,6 +2,11 @@
 
 [![zzCq7d.png](https://s1.ax1x.com/2022/12/27/zzCq7d.png)](https://imgse.com/i/zzCq7d)
 
+## 关联后端项目
++ GitLab: https://gitlab.com/xcfstudio/woodfish-server
++ GitHub: https://github.com/xcfstudio/woodfish-server
++ Gitee: https://gitee.com/xcfstudio/woodfish-server
+
 ## 前言
 
 本项目是作者的创作型实验项目，旨在打造干净、清爽的小而美的应用。本项目主要功能是积分制敲木鱼，并进行排行。多用户系统，卡片式数据呈现。更多功能正在开发中...
